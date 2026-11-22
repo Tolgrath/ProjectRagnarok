@@ -84,7 +84,17 @@ Status: Living design record. **Approved** means the player approved the intende
 - Codex screenshots showed UI and menu functional foundations, but multiple art and layout deficiencies remain; new creator wizard, radial fog and TP workflow are part of a subsequent Codex instruction, **not confirmed implemented**.
 - Current game model and animation quality requires direct in-game inspection, separate from artistic reference approval.
 - Public site Dev Log is release-based and must not report draft design choices as shipped changes.
-- No official publish without a user playtest and approval.
+- Public prereleases may be published at the user's explicit direction for testing; do not misstate them as fully verified or stable. User acceptance and two-PC verification are separate release checkpoints.
+
+## Published release checkpoint — 2026-11-22
+
+- **Published by the user:** [Project Ragnarok v0.15 — Co-op Alpha Playtest](https://github.com/Tolgrath/ProjectRagnarok/releases/tag/v0.15-coop-playtest), tag `v0.15-coop-playtest`, Windows ZIP `ProjectRagnarok-v0.15-Windows-Coop-Playtest.zip` (66,682,400 bytes).
+- **Package SHA-256 reported by Codex (not independently rehashed here):** `680013363EED5ED76F99A5EB57BDAC38C1CD466516B05A31922D69BA187CF75A`.
+- The release notes list the **open-air washing/dressing area**, two Viking figures incorporated **into the static background artwork only** (not 3D NPCs), menu/tab polish, improved finalization summaries, corrected body/appearance consistency and female presets clearing beard selection.
+- **Reported Codex validation:** 21 local host/guest checks, 8 shared-stock checks, 161 prototype regressions, and extracted Windows executable launching main menu, creator and forest.
+- **Still awaiting user verification:** physical two-PC LAN co-op and any packet-loss / real-network issues; in-world visual parity with approved character reference remains incomplete.
+- The earlier `v0.15-playtest` and `v0.14-playtest` remain preserved. This is a new tagged prerelease rather than an overwrite.
+- Website main gated download was changed to this exact published ZIP; the automated Dev Log shows the release's GitHub patch notes.
 
 ## Maintenance protocol
 
