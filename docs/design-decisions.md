@@ -96,6 +96,15 @@ Status: Living design record. **Approved** means the player approved the intende
 - The earlier `v0.15-playtest` and `v0.14-playtest` remain preserved. This is a new tagged prerelease rather than an overwrite.
 - Website main gated download was changed to this exact published ZIP; the automated Dev Log shows the release's GitHub patch notes.
 
+## Two-PC field test recorded — 2026-11-22 (open items)
+
+- The user and a friend **tested the published co-op alpha on separate PCs**. This changes prior status from *physical testing not performed* to *performed with significant defects*. It does **not** mean two-PC co-op passed.
+- The user reported **59 numbered observations, defects, questions and proposals**. Full original-language ledger: [v0.15 Two-PC Playtest Findings](v0.15-two-pc-playtest-findings.md).
+- Highest-priority observations: guest lag, guest food/water glitching, lack of TP distribution on succession, only one TP choice for both host/guest, guest trophies and tree gathering, broken large boulder mining, broken storage chests, unexplained high fever/severe illness/weakness.
+- Next build recommendations: reproduce/network-log before claiming root cause; validate actual two-client host/guest state rather than relying only on loopback test counts; fix existing mechanics before expanding fauna or world dimensions.
+- Additional **user requests and reports awaiting design/implementation**: delete worlds; improved death message; left-hand fingers; creator/hosting/joining flow; host player count arrows; guest spawn; player feedback on hits and TP; structure rotation/snapping; stamina tuning; inventory drop/context menus; berries supply water; death-item auto-gather prohibition; Procession of Fallen; NPC base commands; ammo; survival bar warnings; x-ray occluders; minimap center; more animals/enemies; bow aim; tombstone removal; beds purpose; settlement cap; map size/terrain; palisade gate; handedness/offhand; sounds/audio settings; responsive UI; rain weather/collector logic; trusted Windows signing and updater/launcher investigation.
+- These are **field findings and requested directions, not yet fixes or independently confirmed implementations**. Where a question asks about current code (map size, NPC cap, beds, illness trigger), the answer requires inspecting the local Godot project.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
