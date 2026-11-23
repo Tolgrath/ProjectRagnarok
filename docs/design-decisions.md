@@ -232,6 +232,25 @@ Status: Living design record. **Approved** means the player approved the intende
 ### Verification / delivery
 - Test actual native Windows interaction and full save/load; no slot/item loss, infinite resource spawns, illicit harvest, water softlocks, POI clipping or accidental world deletion. Keep honest solo vs co-op status. No public release or website claim of implementation until validated and approved.
 
+## Latest corrections / confirmed next-build rules — 2026-11-23 evening
+
+**Status:** User-approved corrections to the open v0.17 feedback. Not yet implemented. These **supersede conflicting earlier statements**.
+
+- **Berries:** max stack **100** (was 8).
+- **Spring water** (`raw_water`): max stack **100** (was 8). Do not silently conflate this with `water` (clean water) unless separately approved.
+- **No backward save compatibility requirement at this development stage.** Previous saves can be discarded; remove legacy items/registries/recipes instead of retaining unsupported resources merely to protect old saves. Continue using isolated test saves and preserving current project backup for development safety.
+- **Approved resource whitelist** comes from [2026-11-23 crafting/medical specification](next-build-crafting-tools-medical-spec-2026-11-23.md): stick, pebble, plant_fibre, bark, leek, mushroom, bone, branch, cobble, log, stone_slab, plus expressly approved crafted resources such as tog, and separately approved animal yields, food, medical items, weapons, armour and equipment where established. **Generic `stone` is forbidden**. Also audit unspecified/legacy `wood`, `plank`, `supplies`, `dressing`, `clean_bandage`, `wound_wash`, duplicate historical equipment, and all other entries against *actual* express user approvals, not the existing registry as authority. **Remove field dressing** (`dressing`) specifically. Do not introduce replacements unapproved by the user. If removal breaks POI building, combat, crafting or quests, rework dependency to explicitly approved ingredients or identify the blocked recipe instead of silently inventing new quantities. Do not interpret stone weapon descriptors as the forbidden generic stone resource.
+- **Water:** minimal buoyancy/flotation and swim animations/physics for healthy survivors, NPCs, animals; **infected remain unable to swim**, sink and thrash, per locked original rule. Water has physical interaction for infected, not swimming competence.
+- **Procession:** the **Grim Reaper LEADS** the procession. The four translucent ghostly bearers remain and must **walk on the ground**, carry the body at shoulder height with flowing clothes. Reaper is a distinct lead character, not a substitution for one of the four bearers. Keep eerie airy original funeral music.
+- **Target outline:** when crosshair *actually targets an enemy that the shot is expected to hit*, show a **basic red silhouette/outline** around that enemy. Do not mark a blocked/occluded enemy or pretend a projectile will hit it when actual trajectory/collision disagrees. Aim must hit the crosshair target when physically possible; test raycast/camera muzzle, ballistic travel, target movement and UI timing.
+- **Severe bleeding:** user reports dying **extremely quickly**. Treat as urgent **suspected functional defect**: instrument actual damage-per-second and wound count and verify no doubled wound events/ticks, stacking from a single wound or timer inaccuracies. **Existing approved 3 HP/s per severe wound remains until explicitly changed**; if data show compliant yet overly harsh balance, report with measured survival time and options for user decision rather than lowering it silently.
+- **World management:** **remove Archive World functionality entirely**. World selection instead uses a clear **Select World** button opening a **modal/list panel** of all saved worlds, with details about each world's survivor (name, status/progression as genuinely known; plus useful grounded world details). Select/open from this panel. **Delete World** action lives inside the same world-selection panel, with exact-name confirmation and recoverable trash/backup where feasible. Not a dropdown menu; preserve general no-dropdown preference.
+- **TP passives:** audit existing costs/effects/implementation and present proposed rebalancing for approval; do not silently change them.
+- **Animal harvest:** harvesting knife only; no tool bypass.
+- **Auto-gather:** smarter paths and opt-in/out options per eligible resource, previous ground>carcass>tree/boulder and 60s drop exclusion still apply.
+
+**Implementation verification:** use exact approved resource list above plus full user-approved equipment/food/medical rules as authority; produce an explicit kept/removed item table so the user can inspect whitelist enforcement. Old saved worlds can be incompatible without rollback migration. Do not start Codex until user authorizes another instruction.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
