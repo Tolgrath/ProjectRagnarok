@@ -105,6 +105,15 @@ Status: Living design record. **Approved** means the player approved the intende
 - Additional **user requests and reports awaiting design/implementation**: delete worlds; improved death message; left-hand fingers; creator/hosting/joining flow; host player count arrows; guest spawn; player feedback on hits and TP; structure rotation/snapping; stamina tuning; inventory drop/context menus; berries supply water; death-item auto-gather prohibition; Procession of Fallen; NPC base commands; ammo; survival bar warnings; x-ray occluders; minimap center; more animals/enemies; bow aim; tombstone removal; beds purpose; settlement cap; map size/terrain; palisade gate; handedness/offhand; sounds/audio settings; responsive UI; rain weather/collector logic; trusted Windows signing and updater/launcher investigation.
 - These are **field findings and requested directions, not yet fixes or independently confirmed implementations**. Where a question asks about current code (map size, NPC cap, beds, illness trigger), the answer requires inspecting the local Godot project.
 
+## Approved for next authorized build — 2026-11-23
+
+- **New gameplay specifications approved today:** tiered forage resources and stack limits, breakdown tools/stations, exact starter tool/weapon/ammunition recipes, permanent dedicated non-combat tool slots with in-place upgrades, realistic resource yields, wound/bleeding rules, plague-only infection, food poisoning and medical crafting.
+- **Authoritative detailed specification:** [Next-build crafting, tools & medical spec](next-build-crafting-tools-medical-spec-2026-11-23.md). Read this **before Codex implementation**. Latest user corrections take precedence over older inconsistent recipes and ailment notes.
+- **Tool/weapon roster locked:** Do not add any weapon or tool without explicit player instruction. Tools are non-combat, have no durability, occupy their own permanent category slot, are never duplicated/stored as spares, are automatically drawn for relevant actions and upgraded in place.
+- **Medical bleed rule:** one bleeding type per wound, normal 2 HP/s or severe 3 HP/s until treated. Basic wrap only temporarily suppresses severe bleed for 60 seconds; it does not heal the wound.
+- **Plague only:** infected-wound stages refer to the zombie plague, not ordinary wound infections. Food poisoning causes hunger/thirst to drain at 110% of existing base; base rates must be measured from actual code.
+- **Implementation status:** design documented, not coded/published. Integrate with v0.16 local candidate and preserve ongoing co-op recovery; next build requires explicit user authorization.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
