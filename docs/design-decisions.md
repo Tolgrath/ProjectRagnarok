@@ -198,6 +198,40 @@ Status: Living design record. **Approved** means the player approved the intende
 
 **Testing and deliverables:** real Godot/Windows candidate, versioned rollback snapshot, unit and in-engine validation incl. infection death→statue→quest→battle→funeral, solo pre-quest mystery, 60s timed sack behaviour, inventory consistency/save-load, performance and network compatibility fixtures; acknowledge physical two-PC tests not yet done. Supply local path, release notes, test report, screenshots, checksum and known limitations. Avoid publishing publicly until user approves.
 
+## Solo playtest feedback — inventory, resources, water, combat and world management (2026-11-23)
+
+**Status:** User-requested changes and observations; open for the **next authorized** 3D Godot implementation. No claim of completion. Preserve the last candidate, backups and existing saves.
+
+### Inventory, equipment and hotbar
+- Once **armour or shields are equipped**, they must **stop occupying backpack/inventory slots**. Unequipping should restore the item safely to an available inventory slot, or be refused clearly when full. Inventory count, equipment persistence and host/guest ownership must remain accurate. Clarify whether separate armour slots exist by inspecting code; do not destroy items.
+- **Increase berry stack limit** (currently 8 in v0.17 catalogue), exact new cap not specified; choose a sensible cap for discussion or confirm it before implementing. **Increase spring water / raw_water stack limit** (currently 8), exact new cap not specified. Keep clean water distinctions explicit.
+- On death/successor recovery of possessions, **restore items to their original hotbar slots** where possible, rather than merely returning them to backpack. Preserve recorded slot mapping across death, procession, Fallen Champion, save/reload and network. Handle occupied slots predictably and without loss.
+- In inventory UI, **remove hotbar scrolling** and **shrink hotbar by 15%** compared to its current inventory-screen size; keep gameplay hotbar unchanged. Display **item quantity** on hotbar slots in inventory view, matching actual stacks.
+
+### Resources, harvesting, auto-gather
+- **Only harvesting knives can harvest animal bodies**; no bare-handed harvesting or other tools.
+- **Only explicitly user-approved resource types should appear in newly generated gameplay/crafting.** Generic legacy `stone` is **not** approved, nor are other unsupported legacy-resource recipes. Audit legacy resource items, resource spawners, collection rewards, crafting/building recipes and inventory compatibility; make new content adhere to approved tiered resources (pebbles/cobbles/stone slabs, sticks/branches/logs, etc.) instead of stone/wood stand-ins. Never casually delete or corrupt old saves; inventory migration/compatibility needs careful reporting. Do not interpret removing `stone` as removing legitimate approved stone-based weapons or the tiered cobble/slab items.
+- Auto-gather pathfinding must become **smarter and reliable**: avoid obstacles, unreachable targets, rapid target switching, path loops; preserve ground > carcass > tree/boulder priority, tool prerequisites, 60s newly dropped exclusion and prohibition on automated grave/corpse loot.
+- Add **Options → Auto-Gather** with **individual opt-in/opt-out checkboxes for each eligible item/resource category**, persistent per profile/survivor as appropriate; ensure defaults match approved auto-gather and never introduce auto-looting forbidden memorial items.
+
+### World, collision, water, animals
+- Add **lightweight buoyancy/flotation** and **basic swim animations**, applying water physics consistently to **all creatures** (players, NPCs and animals), with sensible movement transitions at waterlines and ford/sea/river. IMPORTANT previous plague design states **infected cannot swim, sink and thrash**. This request for physics on all creatures may include infected water interaction, but is **not sufficient by itself to silently grant infected swimming ability**; implement physical sinking/thrashing for infected unless user explicitly revises that rule.
+- Add reliable collision volumes to **POI structures** and verify the survivor cannot walk through solid walls, pillars, roofs or other relevant geometry. Avoid blocking functional entrances or AI routes.
+
+### Procession of the Fallen
+- Four spectral carriers exist but **they appear to fly**. Correct locomotion and body transport: feet at ground level, grounded walking/gait and foot placement over terrain, actual shoulder-height corpse carry, light translucent ghost clothing and flowing movement. No floating procession except an explicitly designed separate no-ground fallback. Preserve music and solo funeral.
+
+### Combat and medical
+- **Aiming remains inaccurate.** A projectile should **strike the surface or target indicated by the crosshair** when unobstructed, using correct crosshair-to-world ray/camera-to-muzzle aim solving and projectile collision. Address origin obstruction/ballistics honestly where trajectory is physically impossible, rather than knowingly displaying a misleading hit reticle. Test across pitch, range, terrain, moving targets, and native frames, retaining RMB facing lock.
+- **Severe bleeding feels excessively aggressive** in solo test. Existing locked approved rule: severe **3 HP/s per severe wound**, normal **2 HP/s per normal wound**, one bleed class per wound and 60s temporary basic wrap. **Do not silently change these approved numeric rates.** Audit damage application for double ticks, multiple duplicate wounds, frequency, double counting or missing timer suppression; report whether observed aggression is correct-by-spec or a defect. Propose any balancing adjustment separately for user decision.
+
+### Progression and world management
+- **Assess passive skills purchasable with TP**: audit existing skills, prices, scaling, availability, missing benefits, power balance, descriptions and whether they actually affect character stats. Report findings and recommended refinements before assuming numerical rule changes are approved.
+- Add **Delete World** option to world selection with clear name/seed confirmation and preferably recoverable trash/backup; prevent accidental deletion of active/shared worlds, delete only the chosen world, preserve other saves/profiles/settings, and handle errors.
+
+### Verification / delivery
+- Test actual native Windows interaction and full save/load; no slot/item loss, infinite resource spawns, illicit harvest, water softlocks, POI clipping or accidental world deletion. Keep honest solo vs co-op status. No public release or website claim of implementation until validated and approved.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
