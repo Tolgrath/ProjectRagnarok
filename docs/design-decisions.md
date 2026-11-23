@@ -114,6 +114,14 @@ Status: Living design record. **Approved** means the player approved the intende
 - **Plague only:** infected-wound stages refer to the zombie plague, not ordinary wound infections. Food poisoning causes hunger/thirst to drain at 110% of existing base; base rates must be measured from actual code.
 - **Implementation status:** design documented, not coded/published. Integrate with v0.16 local candidate and preserve ongoing co-op recovery; next build requires explicit user authorization.
 
+## Requested world, combat and wildlife milestone — 2026-11-23
+
+- **Newly requested:** sea-surrounded island with a map size increase of 50%, at least one river, ravens/rabbits alongside deer/wolves/boars/bears, at least two class-dependent reanimated survivor versions and reanimated animals, less restrictive camera pitch, separate ranged aim calculation and RMB facing-lock crosshair for both melee/ranged attacks, tree/boulder auto-gather, more rebindable controls, crouch/sneak, and functional single-player Procession of the Fallen.
+- **Deferred for later discussion:** animal-hide pouches to increase item-specific carrying capacities, inspired by The Forest; no mechanics or recipes approved yet.
+- **Implementation status:** requirements recorded, not implemented. Detailed [world, combat, wildlife & controls request](next-world-combat-wildlife-requirements-2026-11-23.md).
+- **Size ambiguity:** 50% more linear dimensions and 50% more total area yield different map sizes. Do not mark a numeric size finalized until interpreted with the user.
+- **Restrictions:** no independently invented tools or weapons; preserve existing 3D project, save compatibility and the current preference for mostly solo tests.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
