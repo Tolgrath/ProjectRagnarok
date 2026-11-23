@@ -135,6 +135,39 @@ Status: Living design record. **Approved** means the player approved the intende
 
 **Development process:** solo testing is primary; physical two-PC testing roughly every other weekend. Do not interrupt or overwrite current candidate; incorporate in next authorized update. No public release or website mutation implied by this feedback.
 
+## Approved corrections — auto-gather, menus and infection-death procession (2026-11-23)
+
+**Status:** User-approved gameplay and presentation requirements for the next authorized 3D build; **not yet implemented or tested**. The following corrects and supersedes narrower v0.17 solo-test notes. Do not modify the current packaged candidate, public GitHub Release or website as part of documentation.
+
+### Automatic gathering
+- Auto-gather should **prioritize eligible resources lying on the ground over harvesting trees and boulders**. When no higher-priority eligible ground resource is nearby, proceed to trees/boulders with the correct permanently equipped tool.
+- **Include every eligible naturally spawned resource lying on the ground**, not only plant fibre and cobbles; keep stack limits, inventory capacity, interaction distance, resource depletion and authority rules.
+- **Exclude any player-dropped resource/item for 60 seconds after being dropped**. This exemption prevents immediately picking up deliberately dropped items; ensure an authoritative drop timestamp rather than an exploitable client-only timer. Eligible once the 60-second window has elapsed.
+- **Include animal carcasses** in auto-gather/harvesting, checking for an eligible equipped harvesting knife and correct species loot/treatment rules. A carcass is not the same as a dead survivor's grave or belongings.
+- **Never auto-gather player/survivor corpses, grave loot or dropped belongings from dead survivors**, even after 60 seconds; these need deliberate interactions under existing memorial/recovery rules.
+- Preserve co-op ownership and prevent simultaneous auto-gather duplication.
+
+### Menu UI
+- **Remove dropdown menus across the entire game UI**, including Settings, creator, inventory/crafting and other menus. Replace with appropriate visible alternatives (tabs, buttons, icon grids, segmented choices, lists, or increment/decrement controls) that can handle existing options.
+- Maintain all settings/character data and accessible keyboard/mouse navigation. Do not sacrifice screen scaling or functionality for a flat layout. Related feedback: key rebinding is particularly poor; redesign capture, conflict warning, defaults and saved controls without dropdowns.
+
+### Procession of the Fallen — visuals and conditional death rules
+- **Four mysterious spectral figures** carry a normally deceased survivor's corpse **at shoulder height** throughout the procession.
+- Clothing should move and flow convincingly during walking; figures are ghosts and should be **slightly transparent** (not invisible). Keep performance manageable.
+- **If survivor dies because of plague infection:** do **not** initiate a procession immediately. Survivor reanimates as a roaming infected Viking retaining an identity link to that fallen survivor; use approved infected movement/behaviour rules.
+- **Only once that reanimated survivor is killed** should the four-figure procession occur and the fallen survivor be honoured. This creates a gameplay objective to find and put down the former survivor; do not add an automatic timeout procession or silently honour them while infected.
+- **Immediately upon infection death:** notify settlement/village of the fallen survivor. Show **an unmarked grave**, with the survivor's belongings visibly laid **in front of it**. The grave is not yet a full memorial/honour. Ensure unmarked marker, loot, infected former survivor and later procession/memorial are consistently linked, survive save/reload, and cannot duplicate or lose possessions.
+- The unmarked grave is a placeholder of loss, not proof the roaming infected body has been laid to rest. When the reanimated former survivor is put down, transition to the proper procession and honouring flow without duplicate graves or loot.
+- Continue to support the already approved **single-player** procession; do not require guest/NPC player presence. Reconcile settlement and no-settlement fallback rules with this exception.
+- Do not alter the separate rules for plague infection and limb treatment, ordinary non-infection death, or tool/weapon roster.
+
+### Open implementation details (not yet gameplay decisions)
+- The exact sorting among multiple eligible ground pickups/animal carcasses and handling inaccessible targets may use stable nearest-reachable targeting, but should not spin or constantly retarget.
+- How the unmarked grave transitions to a completed memorial and how corpse/loot recovery interacts with the plague reanimation should preserve existing death, succession and recovery semantics; use documented consistent behaviour and flag any genuine conflict.
+- Animating four semi-transparent carriers at shoulder height is required visually, but may be achieved with lightweight shaders/animation rather than expensive real-time physics; evaluate in-game from more than one camera angle.
+
+**Next-build acceptance:** solo manual checks of priority ground→tree/boulder, 60s no-repickup, animal harvesting, no survivor auto-loot, dropdown-free UI, ordinary death procession, infection death→roaming infected plus unmarked grave and settlement notification→former survivor defeat→spectral procession, and save/reload in both death branches. Physical two-PC testing stays a separate pending validation.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
