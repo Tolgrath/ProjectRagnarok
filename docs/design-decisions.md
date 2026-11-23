@@ -260,6 +260,66 @@ Status: Living design record. **Approved** means the player approved the intende
 - **Remove Archive World** functionality entirely; do not replace this panel with a dropdown. The UI should fit the game's established aesthetic, scale and control scheme.
 - This is approved for **next authorized Codex build**, not yet implemented. No local game changes or public website updates from recording the decision.
 
+## v0.18.0 solo playtest — usability, NPC systems and critical successor bug (2026-11-23 night)
+
+**Source:** User's live solo feedback with two screenshots (inventory/storage and shoreline with follower Einar). **Status:** user-requested fixes/features to include in a subsequent authorized Codex pass; not implemented, no success claims. Compare to ongoing current code before coding and preserve source backups. Original screenshots in chat are visual context, not local GitHub files.
+
+### Critical progression blocker — fix first
+- After survivor death, successor creator **cannot confirm**. Error reported exactly: **"could not write the checkpoint. Your TP is unchanged."** Reproduces whether TP points are spent or not. Trace checkpoint write/validation, survivor succession, saved equipment, grave inventory and profile/world paths; produce actionable failure diagnostics and tests for both TP conditions. Do **not** treat as TP point accounting alone. Fix checkpoint atomicity; never lose inventory, TP or world state. Try actual native end-to-end death→successor creation→save/reload.
+
+### Inventory, storage and crafting UI
+- **Inventory-screen hotbar** remains too large and still contains a scrollbar. Shrink to fit its allocated width (previous explicit 15% reduction) and eliminate scrollbar; show slot item quantities in bottom-right consistently, without resizing normal gameplay HUD hotbar.
+- **Crafting categories should be visible tabs**, not previous/next arrow selectors or dropdowns. Keep category navigation clear and fit available width.
+- Recipe button should contain compact ingredient quantities and their **inline icons**, e.g. `5 × [approved resource icon], 3 × [approved resource icon]`; remove redundant separate icon row below recipe button. Maintain legibility, full ingredient and tool information and responsive UI without horizontal overflow.
+- Add an approved **Mortar & Pestle crafting recipe**, but its **ingredients and required tools/station have NOT been specified by the user**. Do not invent those as if approved; present a concise proposed recipe for approval (or leave the acquisition path functional while awaiting it).
+- Chest resource artwork currently renders **abnormally large** and obscures the fixed slots; apply same controlled icon sizing as backpack. **Show stack quantities at bottom-right of each slot**.
+- Chest should have a **fixed grid layout/dimensions independent of how many items are present** (within chest's actual capacity), rather than dynamically expanding/collapsing with contents.
+- Add **Nearby Stack to Chests** action from inventory button and/or hotkey to deposit matching compatible player items into reachable chests without duplication, with clear range/ownership and safe multiplayer authority.
+- **Ctrl + left-click** quick-transfers selected item / entire stack between appropriate open inventories and containers; preserve hotbar references, eligibility, capacity and stack counts.
+
+### Gathering, combat and navigation
+- During held auto-gather, **retain a drawn dedicated axe/pickaxe/knife across consecutive same-tool actions**, only stowing/switching if next target requires another tool or the held auto-gather key (Space in current controls) is released. Then restore precisely the prior equipped weapon/item state. Do not stow axe between each tree swing.
+- **Auto-gather should collect dropped/recoverable arrows** when eligible, with the existing individual 60-second protection for player-dropped items, corpse/grave exclusions and inventory checks. Arrow recovery is not interchangeable with user-dropped item cooldown.
+- **Auto-gather pathing still struggles around obstacles.** Improve actual navigation and stuck recovery through rocks, trees, POI geometry and shore; skip unreachable targets rather than spin or run into collisions.
+- **Boulder mining/harvesting still not functioning** in the user's live build (shoreline screenshot). Instrument interaction target detection, dedicated pickaxe gating, auto-gather/manual path, valid boulder types and depletion; fix for real world placed boulders without introducing forbidden generic `stone` drops.
+- **Ranged uphill shots still fail**. Crosshair is authoritative intentional aim point: aim-assist/trajectory solve from projectile origin to crosshair world target when physically reachable, with appropriate projectile ballistics, without punishing camera elevation. Do not mislead with target outlines; genuinely hit when shot is valid. Test several steep slopes at real native frame rates.
+- **Enemy outline should be a single basic red exterior silhouette**, not assorted internal body-part outlines. Use mesh grouping/depth-aware outline appropriate to final visible target; no red interior artifacts and no highlighting obstructed targets.
+- On map and minimap, player marker must be **directional arrow rotating to actual survivor facing**.
+
+### Water and creature interaction
+- Swimming currently moves but **character should sink until waterline is at least 3/4 up the torso** while swimming, with sensible buoyancy.
+- **Suppress footsteps while swimming**; use appropriate water motion/audio instead where implemented.
+- Preserve hard plague rule: infected **cannot swim**, sink and thrash. Apply water physics to NPCs and animals appropriately.
+
+### Character appearance, NPC interaction, trophies
+- In Character screen, **allow rotation of avatar model** so player can inspect trophies of valour from all angles.
+- NPC interaction should offer **Inspect Health** with useful condition/wound display and allow proper treatment of selected injuries using the same approved medical supplies and rules as survivors, with authority/persistence and no free arbitrary cures.
+- **Raven trophy of valour:** wings on back, intentionally **exaggerated angel-like wing size**, awarded through approved raven trophy progression.
+- **Trophies of Valour upgrade visually and/or effects as player kills more of the corresponding creature/infected type**; determine milestone thresholds/effects with user or document proposals, avoid silently inventing new combat power systems.
+- Four NPC aggression/engagement stances:
+  - **Offensive:** attack any enemy within permitted engagement range but **do not chase beyond defined leash distance** of guarding post or current follow target.
+  - **Defensive:** protect post/follow target when an aggressive enemy approaches too closely.
+  - **Neutral:** only attack when NPC itself or assigned follow target is attacked.
+  - **Passive:** avoid fighting, keep distance from aggressors and temporarily flee when attacked.
+  Stances must operate while guarding or following and respect current plague infected senses/settlement boundaries.
+- NPCs should autonomously **eat, drink and medically treat themselves** using legitimate supplies and survival rules while in village or following. No free conjured supplies. Avoid inappropriate food/medical use during active attacks.
+- When player dies, **NPC followers automatically return to their home village**. Persist their status and avoid standing indefinitely at the corpse/site; do not teleport unless necessary to recover stuck pathing.
+
+### Corpse handling and plague safety
+- Add options to **decapitate dead bodies using the approved dedicated axe**, **burn remains with a torch**, or **tie tog around ankles to drag corpse** to another location, rather than picking up the potentially infectious body. The intent is to avoid fluid/contact transfer.
+- Respect established plague rules: brain destruction/decapitation and burning suppress reanimation appropriately, infected animal/survivor handling, potential contagion during unsafe corpse interactions. Must not enable abuse that skips unique Fallen Champion sequence or allows auto-looting memorial bodies; discuss/implement safeguards for notable corpses separately.
+- No new rope item or extra tool invented without explicit approval; user specifically cites **tog** for tying/dragging. Dragging needs basic grounded body physics, safe controls, save considerations and no unrealistic automatic disinfection.
+
+### Build/application presentation
+- Add a custom **Project Ragnarok icon to the exported Windows executable**, including Windows taskbar and window icon as appropriate; prefer existing approved branding asset or user-controlled design rather than borrowing unrelated artwork.
+
+### QA priorities / guardrails
+- First resolve **successor checkpoint failure**; next verify boulder harvesting and uphill projectile aiming in real Windows gameplay, then inventory/crafting usability and animal/NPC handling.
+- Validate screenshot-reported inventory art/chest grid bugs at real UI resolution. Add multiplayer fixtures but do not equate localhost tests with physical two-PC verification.
+- Current v0.18.0 updater and 11 approved original resource icons must remain intact. Avoid overwriting user's `G:\Project Ragnarok\Design Assets\Icon Art` originals or live public releases.
+- Maintain user-approved resource/item whitelist, no invented resources or player weapon/tool types. Previously approved hide carrying pouches still deferred.
+- Numeric proposals (mortar recipe, trophy thresholds, stance ranges, target hit compensation) should be explicitly called technical defaults/proposals, not silently misrepresented as user-approved values.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
