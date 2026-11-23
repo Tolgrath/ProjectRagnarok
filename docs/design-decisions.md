@@ -122,6 +122,19 @@ Status: Living design record. **Approved** means the player approved the intende
 - **Size ambiguity:** 50% more linear dimensions and 50% more total area yield different map sizes. Do not mark a numeric size finalized until interpreted with the user.
 - **Restrictions:** no independently invented tools or weapons; preserve existing 3D project, save compatibility and the current preference for mostly solo tests.
 
+## Solo field feedback — revised v0.17 island candidate (2026-11-23)
+
+**User-observed, still open:** These findings are from a quick solo playtest of the revised local v0.17 candidate. They are not fixed or user-approved as implemented.
+
+1. **Release updates:** User requests an easy automatic updater, potentially a main-menu "New update available — click to update" notification that downloads and restarts. Feasible design: lightweight external updater process to replace the running Windows EXE safely; check user-approved published GitHub release assets, verify source and SHA-256 or signature, stage download, back up existing files, close game, atomic swap/rollback, restart, preserve saves/settings outside installation directory, show errors/progress and provide offline/manual fallback. Avoid automatically installing every prerelease, including untested candidates. This is a proposed implementation, not yet approved.
+2. **Auto-gather bug:** Held auto-gather omits plant fibre and cobble. Audit forage registry and harvesting routing for these exact resources and protect dead-survivor items from auto-loot.
+3. **Keybinding UX:** User calls current binding interface "terrible." Rework readable action grouping, key capture prompts, conflict checks, reset defaults and saved bindings; do not assume a particular layout was approved.
+4. **Crosshair quality:** RMB reticle functions but is very jerky. Diagnose raw mouse input, interpolation, aim elevation vs camera mode handoff and frame-time jitter. Improve smoothness without hiding actual aiming error or adding excessive latency.
+5. **Inventory sorting:** Add functioning inventory Sort button preserving stacks, quantities, hotbar references, ownership and multiplayer authority; sort order is not yet specified.
+6. **Death procession UI:** Position death message immediately above bottom hotbar instead of blocking the procession; test responsive layout and scaling.
+
+**Development process:** solo testing is primary; physical two-PC testing roughly every other weekend. Do not interrupt or overwrite current candidate; incorporate in next authorized update. No public release or website mutation implied by this feedback.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
