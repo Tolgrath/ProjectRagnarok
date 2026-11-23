@@ -251,6 +251,15 @@ Status: Living design record. **Approved** means the player approved the intende
 
 **Implementation verification:** use exact approved resource list above plus full user-approved equipment/food/medical rules as authority; produce an explicit kept/removed item table so the user can inspect whitelist enforcement. Old saved worlds can be incompatible without rollback migration. Do not start Codex until user authorizes another instruction.
 
+## Approved Select World screen concept — 2026-11-23
+
+- User explicitly approved the **Select World panel concept** shown in chat for the next Project Ragnarok Codex build.
+- Main menu has **Select World** button. Clicking opens a proper panel/modal with **all available saved worlds**, each showing the **world name, survivor name and meaningful survivor details** such as progress/level/status where available, plus useful world metadata.
+- The panel offers an obvious **selection indicator** and controls for **entering/continuing selected world** and **deleting selected world**. Show actual saved-world data, not the sample mockup names ("Northern Shores", "The Last Settlement").
+- **World deletion** requires clear named confirmation; prefer recoverable backup/trash rather than immediate irreversible removal. Do not allow accidental deletion of the active world or another user's world.
+- **Remove Archive World** functionality entirely; do not replace this panel with a dropdown. The UI should fit the game's established aesthetic, scale and control scheme.
+- This is approved for **next authorized Codex build**, not yet implemented. No local game changes or public website updates from recording the decision.
+
 ## Maintenance protocol
 
 1. When the user approves a new design decision, add it to this register under the relevant **Approved** section.
