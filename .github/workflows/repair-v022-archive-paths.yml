@@ -1,0 +1,74 @@
+name: Fix v0.22.0 unsafe ZIP paths
+on:
+  push:
+    paths:
+      - .github/workflows/repair-v022-archive-paths.yml
+permissions:
+  contents: write
+jobs:
+  repair-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download current release ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/ragnarok-fix
+          gh release download v0.22.0 --repo "$GH_REPO" --pattern 'ProjectRagnarok-v0.22.0-Windows-x64.zip' --dir /tmp/ragnarok-fix
+      - name: Repack safe relative paths without changing game files
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,hashlib,shutil
+          folder=Path('/tmp/ragnarok-fix')
+          source=folder/'ProjectRagnarok-v0.22.0-Windows-x64.zip'
+          output=folder/'ProjectRagnarok-v0.22.0-Windows-x64-clean.zip'
+          expected={'AUDIO-LICENSES.md','CHARACTER-ATTRIBUTION.md','GODOT-LICENSES.txt','ProjectRagnarok.exe','RagnarokUpdater.exe','README.md','RELEASE-NOTES.md','release-version.txt'}
+          with zipfile.ZipFile(source) as zi:
+              original={i.filename[2:]:i for i in zi.infolist() if i.filename.startswith('./') and i.filename!='./'}
+              assert set(original)==expected, f'Unexpected archive entries: {set(original)^expected}'
+              assert zi.testzip() is None, 'Original ZIP CRC failed'
+              with zipfile.ZipFile(output,'w') as zo:
+                  for name,oldinfo in original.items():
+                      newinfo=zipfile.ZipInfo(name,oldinfo.date_time)
+                      newinfo.compress_type=zipfile.ZIP_DEFLATED
+                      newinfo.external_attr=oldinfo.external_attr
+                      with zi.open(oldinfo) as src,zo.open(newinfo,'w') as dst:
+                          shutil.copyfileobj(src,dst,1024*1024)
+          with zipfile.ZipFile(source) as original,zipfile.ZipFile(output) as repacked:
+              assert set(repacked.namelist())==expected
+              assert repacked.testzip() is None
+              for name in sorted(expected):
+                  assert hashlib.sha256(original.read('./'+name)).digest()==hashlib.sha256(repacked.read(name)).digest(),f'Changed bytes: {name}'
+              assert repacked.read('release-version.txt').strip() in (b'0.22.0',b'v0.22.0')
+              print('Verified all 8 files byte-for-byte identical to original contents.')
+              print('Safe ZIP entries:',repacked.namelist())
+              print('Repacked SHA256:',hashlib.sha256(output.read_bytes()).hexdigest())
+          PY
+      - name: Upload verified replacement before removing original
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh release upload v0.22.0 /tmp/ragnarok-fix/ProjectRagnarok-v0.22.0-Windows-x64-clean.zip --repo "$GH_REPO"
+          gh release download v0.22.0 --repo "$GH_REPO" --pattern 'ProjectRagnarok-v0.22.0-Windows-x64-clean.zip' --dir /tmp/ragnarok-fix/verified
+          cmp /tmp/ragnarok-fix/ProjectRagnarok-v0.22.0-Windows-x64-clean.zip /tmp/ragnarok-fix/verified/ProjectRagnarok-v0.22.0-Windows-x64-clean.zip
+          echo 'Verified replacement uploaded to GitHub and redownloaded intact.'
+      - name: Swap the release asset to the original public filename
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          old_id="$(gh api "repos/$GH_REPO/releases/456880781/assets" --jq '.[] | select(.name=="ProjectRagnarok-v0.22.0-Windows-x64.zip") | .id')"
+          new_id="$(gh api "repos/$GH_REPO/releases/456880781/assets" --jq '.[] | select(.name=="ProjectRagnarok-v0.22.0-Windows-x64-clean.zip") | .id')"
+          test -n "$old_id" && test -n "$new_id"
+          gh api -X DELETE "repos/$GH_REPO/releases/assets/$old_id"
+          gh api -X PATCH "repos/$GH_REPO/releases/assets/$new_id" -f name='ProjectRagnarok-v0.22.0-Windows-x64.zip' --jq '{name, size, state, browser_download_url}'
+          count="$(gh api "repos/$GH_REPO/releases/456880781/assets" --jq '[.[] | select(.name=="ProjectRagnarok-v0.22.0-Windows-x64.zip" and .state=="uploaded")] | length')"
+          test "$count" = 1
+          echo "Replacement release ZIP is published under canonical name."
