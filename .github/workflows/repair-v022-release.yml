@@ -1,0 +1,45 @@
+name: Repair v0.22.0 release asset naming
+on:
+  push:
+    paths:
+      - .github/workflows/repair-v022-release.yml
+permissions:
+  contents: write
+jobs:
+  repair-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Match existing Windows updater asset naming
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          asset_id=787527213
+          current="$(gh api "repos/$GH_REPO/releases/assets/$asset_id" --jq '.name')"
+          if [ "$current" = 'ProjectRagnarok-v0.22.0-Windows-x64.zip' ]; then
+            echo "Asset already has the canonical updater filename."
+          elif [ "$current" = 'ProjectRagnarok-v0.22.0-Windows.x64.zip' ]; then
+            gh api -X PATCH "repos/$GH_REPO/releases/assets/$asset_id" -f name='ProjectRagnarok-v0.22.0-Windows-x64.zip' --jq '{name, browser_download_url, size}'
+          else
+            echo "Unexpected release asset name: $current" >&2
+            exit 1
+          fi
+      - name: Correct the published release download link
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GH_REPO/releases/456880781" --jq '.body' > /tmp/release-notes.md
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/release-notes.md')
+          s=p.read_text()
+          old='https://github.com/Tolgrath/ProjectRagnarok/releases/download/v0.22.0/Project.Ragnarok.v0.22.0.-.Windows.x64.zip'
+          new='https://github.com/Tolgrath/ProjectRagnarok/releases/download/v0.22.0/ProjectRagnarok-v0.22.0-Windows-x64.zip'
+          s=s.replace(old,new)
+          s=s.replace('\n[ProjectRagnarok-v0.21.0-Windows-x64.zip](https://github.com/Tolgrath/ProjectRagnarok/releases/download/v0.21.0/ProjectRagnarok-v0.21.0-Windows-x64.zip)','')
+          p.write_text(s)
+          PY
+          gh api -X PATCH "repos/$GH_REPO/releases/456880781" -F body=@/tmp/release-notes.md --jq '{tag_name, draft, prerelease}'
