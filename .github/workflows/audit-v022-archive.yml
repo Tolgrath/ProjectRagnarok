@@ -1,0 +1,43 @@
+name: Audit v0.22.0 updater ZIP paths
+on:
+  push:
+    paths:
+      - .github/workflows/audit-v022-archive.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download published asset and inspect entry paths
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/ragnarok-audit
+          gh release download v0.22.0 --repo "$GH_REPO" --pattern 'ProjectRagnarok-v0.22.0-Windows-x64.zip' --dir /tmp/ragnarok-audit
+          python3 - <<'PY'
+          import pathlib,zipfile,re,hashlib
+          p=pathlib.Path('/tmp/ragnarok-audit/ProjectRagnarok-v0.22.0-Windows-x64.zip')
+          print('ZIP bytes:',p.stat().st_size)
+          print('ZIP SHA256:',hashlib.sha256(p.read_bytes()).hexdigest())
+          with zipfile.ZipFile(p) as z:
+              print('Zip integrity:',z.testzip())
+              names=z.namelist()
+              print('Entry count:',len(names))
+              for i,info in enumerate(z.infolist()):
+                  name=info.filename
+                  normalized=name.replace('\\','/')
+                  problems=[]
+                  if name.startswith(('/','\\')):problems.append('leading slash')
+                  if re.match(r'^[a-zA-Z]:',name):problems.append('drive path')
+                  if '\\' in name:problems.append('backslash')
+                  if any(part=='..' for part in normalized.split('/')):problems.append('parent traversal')
+                  if any(part in ('.','') for part in normalized.split('/')[:-1]):problems.append('empty or dot component')
+                  if '\x00' in name:problems.append('NUL')
+                  unix_mode=(info.external_attr>>16)&0xffff
+                  if (unix_mode & 0o170000)==0o120000:problems.append('symlink')
+                  if name.endswith('/'):problems.append('directory entry')
+                  print(f'{i:04d} {info.file_size:>10} {name!r} [{", ".join(problems) if problems else "ok"}]')
+          PY
